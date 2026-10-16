@@ -15,11 +15,22 @@ import io.github.kevinah95.l08_activity.core.GameObject
  */
 class March(gameObject: GameObject, var step: Double) : Behaviour(gameObject) {
     override fun onFrame(dt: Double) {
-        // TODO: Reducir suavemente gameObject.hop hacia 0
+        if (gameObject.hop > 0) {
+            gameObject.hop = (gameObject.hop - (dt / 100.0)).coerceAtLeast(0.0)
+        }
     }
 
     override fun onUpdate(): Boolean {
-        // TODO: Incrementar gameObject.x según step y asignar hop = 2.0
+        if (gameObject.y > 0) return false // No marcha si está en el aire
+
+        gameObject.x += step
+        gameObject.hop = 2.0
+
+        val game = gameObject.gameSession as? Game
+        val stageWidth = game?.stage?.width ?: 800.0
+        if ((step < 0 && gameObject.x < 0) || (step > 0 && gameObject.x > stageWidth)) {
+            gameObject.gameSession?.despawn(gameObject)
+        }
         return false
     }
 }
