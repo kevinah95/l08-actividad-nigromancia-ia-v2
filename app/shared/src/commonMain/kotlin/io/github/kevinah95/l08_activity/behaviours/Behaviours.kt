@@ -46,7 +46,11 @@ class March(gameObject: GameObject, var step: Double) : Behaviour(gameObject) {
  */
 class Attack(gameObject: GameObject) : Behaviour(gameObject) {
     override fun onCollision(target: GameObject) {
-        // TODO: Aplicar daño mutuo entre atacante y objetivo
+        val dealDamage = gameObject.hp
+        val takeDamage = target.hp
+        val session = gameObject.gameSession as? Game ?: return
+        session.damage(target, dealDamage, gameObject)
+        session.damage(gameObject, takeDamage, target)
     }
 }
 
